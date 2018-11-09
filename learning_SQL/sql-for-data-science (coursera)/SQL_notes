@@ -478,7 +478,7 @@ SELECT customer_name
 FROM customers
 ORDER BY customer_name
 ----------------------------------------------------------------------------
-						Joins
+						JOINS
 ----------------------------------------------------------------------------
 Benefits of Breaking Data into Tables
 	Efficient storage
@@ -487,8 +487,122 @@ Benefits of Breaking Data into Tables
 	Logically models a process
 	Tables are related through common valuse(keys)
 
-it is important to know the JOIN is not a phisical entity, in other words it does not create anything perminent, it only exist duration of ther query execution to help you get that information you're trying to get..
-there are severel types of Joins
+----------------------------------------------------------------------------
+JOINS:
+	Associate correct records from each table on the fly
+	Allows data retrieval from multiple tables in one query
+	Joins are not physical - they persist for the duratino the query execution
+	The more tables you join, the slower the database will perform
+----------------------------------------------------------------------------
+JOINS types:
+	Cartesian (cross) Joins
+	Inner Joins
+	Left
+	Right
+	FULL Outer
+----------------------------------------------------------------------------
+Cartesian (cross) Joins:
+	Each row from the first table joins with all the rows of another table, if we have 10 rows in table_1 and 10 rows in table_2 and we apply Cartesion/Cross join we obtain 100 records
+	Very computationally taxing so Not frequently used 
+	Wille return products with the incorrect vendor or no vendor at all
+
+SELECT product_name
+,unit_price
+,company_name
+FROM suppliers CROSS JOIN table_name;
+# the ouput will be the number of joins in the 1st table multiplied by the number of rows in the 2nd table
+----------------------------------------------------------------------------
+Inner Joins:
+	most frequantly used JOINS in SQL
+	select records that have matching values in both tables
+	no limit what you can join, 
+SELECT suppliers.CompanyName
+,ProductName
+,UnitPrice
+FROM suppliers INNER JOIN Products ON suppliers.supplierid = Products.supplierid
+
+
+# Inner join with Multiple Tables
+SELECT o.OrderID, c.CompanyName, e.LastName
+FROM((Orders 0 INNER JOIN Customers c ON o.CustomerID = c.CustomerID)
+INNER JOIN Employees e ON o.EmployeeID = e.EmployeeID);
+----------------------------------------------------------------------------
+Best Practices With Joins
+	make sure you're pre-qualifying names
+	Do not make unnecessary joins
+	Think about the type of join you are making
+	How are you connecting records?
+----------------------------------------------------------------------------
+				Aliases and Self Joins
+----------------------------------------------------------------------------
+SELECT vendor_name
+,product_name
+,product_price
+FROM Vendors_table as v, Products_table as p 
+WHERE v.vendor_id = p.vendor_id;
+
+
+
+# Self Joins
+SELECT A.CustomerName AS CustomerName1, B.CustomerName AS CustomerName2, A.City
+FROM Customers A, Customers B
+WHERE A.CustomerID = B.CustomerID 
+AND A.City = B.City
+ORDER BY A.City;  
+
+specially when you are joining the table to it self (self joins) you have to have a table Aliase, there is no other way  this could happen
+----------------------------------------------------------------------------
+Left, Right, and Full Outer Joins
+----------------------------------------------------------------------------
+note: SQLite only does Left Joins
+Other DBMS use all joins
+----------------------------------------------------------------------------
+Left Join
+
+SELECT C.CustomerName, o.orderID
+FROM Customers C
+LEFT JOIN Orders O ON C.CustomerID = O.CustomerID
+ORDER BY C.CustomerName;
+----------------------------------------------------------------------------
+Right Join
+note: not supported by SQLite
+
+SELECT Orders.OrderID, Employees.LastName, Employees.FirstName
+FRom Orders
+RIGHT JOIN Employees ON Orders.EmployeeID = Employees.EmployeeID
+ORDER BY Orders.OrderID;
+----------------------------------------------------------------------------
+Full Outer Join 
+note: not supported by SQLite
+
+SELECT Customers.CustomerName, Orders.OrderID
+FROM Customers
+FULL OUTER JOIN Orders ON Customers.CustomerID = Orders.CustomerID
+ORDER BY Customers.CustomerName;
+----------------------------------------------------------------------------
+										UNIONS
+----------------------------------------------------------------------------
+UNIONS
+
+The UNION operator is used to combine the result-set of two or more SELECT statements.
+Each SELECT statement within UNION must have the same numeber of columns
+Columns must have similar data types
+The column in each SELECT statement must be in the same order
+
+# Basic Union Setup
+SELECT column_name(s) FROM table1
+UNION
+SELECT column_name(s) FROM table2;
+
+# Which German cities have suppliers
+SELECT City, Country FROM Customers
+WHERE Country='Germany'
+UNION
+SELECT City, Country FROM Suppliers
+WHERE Country='Germany'
+ORDER BY City;
+----------------------------------------------------------------------------
+
 ----------------------------------------------------------------------------
 
 ----------------------------------------------------------------------------
