@@ -1,0 +1,526 @@
+SQL: Structured Query Language.
+----------------------------------------------------------------------------
+SQL is all about data
+----------------------------------------------------------------------------
+SQL used to query, insert, update and modify data. 
+----------------------------------------------------------------------------
+SQL is non-procedural language:
+  * cannot write completed applicataions.
+  * Simple, but powerfull
+----------------------------------------------------------------------------
+Data Scientist might do a little of the analysis using SQL, however the main thing they're using SQL for is data retrieval. 
+----------------------------------------------------------------------------
+how you write syntax witt depend on what DBMS(database managment system) you are using, each DBMS its own "dialect", you will tweak based on the "dialect" your DMBS speaks.
+----------------------------------------------------------------------------
+Miscrosoft SQL Server, IBM DB2 Oracle, Sybase ASE, PostgreSQL, MySQL, Apache Open Office Base, SQLite
+----------------------------------------------------------------------------
+we use SQLite in this course
+----------------------------------------------------------------------------
+Database: A container that is used to organize and store all the data.
+----------------------------------------------------------------------------
+Table: A structured list of data or a specific type (like excel table)
+----------------------------------------------------------------------------
+Data Modeling: Organizes and structures information into multiple, related tables.
+The data model scheme of organization should always represent the real world as closely as possible. 
+----------------------------------------------------------------------------
+NoSQL: Not Only SQL
+A mechanism for storage and retrieval of unstructured data modeled by means other than batular relations in relationnal databases.
+----------------------------------------------------------------------------
+Relational vs Transactional Model
+
+Relational Model: A database design tha shows the relationships between the different tables, this is really used to optimize querying data, Allows for easy querying and data manipulation in an easy, logical and intuitive way.
+
+Transactional Model: more Operationl database, information may not be stored in a great way for querying and using it for analysis
+----------------------------------------------------------------------------
+Data Model Building Blocks:
+Entity: Person, place, thing, or event
+		Distinguishabel, unique, and distinct
+Attribute:A characteristic of an entity
+Relationship: Describes association among entities:
+	1- One-to-many (eg. customer to invoices)
+	2- Many-to-many (eg. student to classes)
+	3- One-to_one (eg. manager to store)
+----------------------------------------------------------------------------
+ER model <https://d3c33hcgiwev3.cloudfront.net/JIQNlAqcEei8LQpwydYI3g.processed/full/540p/index.webm?Expires=1541808000&Signature=FePpr~ZG-hWl5-dmrIQ3rxB41Es1BkJ0elECyXrw0501crarca7plbwEwnr~un4vxx7hDZa9RQ5pug23KhMgvDIcIE1OuBLqDotmt0RUZzUsFw82DnI0tOktd-kn6x9G~VP7kjUwyXYtyJyi0xWvsrB37XOXNN0X2CsX0lS0ptc_&Key-Pair-Id=APKAJLTNE6QMUY6HBC5A>
+dubare repeat karna h, samajh nahi aaya
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------								Retrieve Data 															Retrieve Data
+----------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+# SELECT for one column
+SELECT colum_name 
+FROM table;
+----------------------------------------------------------------------------
+# SELECT for morethan one column
+SELECT column_1, column_2, column_3 
+FROM table;
+
+or 
+
+SELECT column_1
+		, column_2
+		, column_3
+FROM table;
+----------------------------------------------------------------------------
+# Select all tables
+SELECT *
+FROM table;
+----------------------------------------------------------------------------
+# observations limit (first n records)
+SELECT column
+FROM table
+LIMIT 5;
+
+#in Oracle:
+SELECT column
+FROM table
+WHERE ROWNUM <= 5;
+
+#in DB2:
+SELECT column
+FROM table
+FETCH FIRST 5 ROWS ONLY;
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------								Create Data 															Create Data
+----------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+# create table (not a data, but column names, type of data in each column ... etc)
+CREATE TABLE table_name
+	(
+	Id 		char(10)			PRIMARY KEY,
+	Brand 	char(10) 			NOT NULL,
+	Type 	char(250)			NOT NULL,
+	Color 	char(250)			NOT NULL,
+	Price 	decimal(8,2) 		NOT NULL,
+	Desc 	Varchar (750)		NULL
+	);
+# Id, Brand, Type, Color, Price, Desc columns names hen
+# <Id> column k andar characher type ka data ay ga, jis ki lenght maximum 10 ho gi, column <Type> me 250 characters allow hen........... 
+# phir agli entries <PRIMARY KEY, NOT NULL, NULL> is baat ki hen k in column me null value ijaazat h ya nahi, agar khali chor den gy to by default NULL values allow hon gi 
+# Every column is either NULL or NOT NULL, an error will be returned if one tries to submit a column with no value, don't confuse null values with empty strings, epmpty string not a null value, NOTE: Primary keys cannot be null or empty value
+Note: NULL represents no value
+----------------------------------------------------------------------------
+# Adding Data to the Table
+# when you are sure about order of columns
+INSERT INTO table_name
+VALUES('14535974'
+	,'Gucci'
+	,'slippers'
+	,'Pink'
+	,695.00
+	,NULL
+	);
+# first value to first column, 2nd to 2nd column .... 
+
+# but when you are not sure about order of column, you have to specify column names also
+INSERT INTO table_name
+		(Id
+		,Brand
+		,Type
+		,color
+		,Price
+		,Desc
+		)
+VALUES
+		('14535974'
+		,'Gucci'
+		,'slippers'
+		,'Pink'
+		,695.00
+		,NULL
+		);
+----------------------------------------------------------------------------------------------------------------------
+# Temporary tables
+----------------------------------------------------------------------------------------------------------------------
+CREATE TEMPORARY TABLE temprary_table_name AS
+	(
+	SELECT *
+	FROM original_table
+	WHERE 'shoe_type' == 'sandals'
+	)
+# equal to: temprary_table_name = original_table[original_table['shoe_type'] == 'sandals']
+----------------------------------------------------------------------------
+# commenting
+for 1 line: - -, eg:
+SELECT column_1
+- -,column_2
+,column_3
+,column_4
+from table_name
+
+
+for multiple lines:
+/**/, eg:
+SELECT column_1
+/*,column_2
+,column_3
+*/
+,column_4
+from table_name
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------								Operators 																Operators
+----------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+# WHERE clause operators
+SELECT column_1, column_2
+FROM table_name
+WHERE column_n operator value;
+
+eg:
+SELECT column_1
+,column_2
+,column_3
+FROM table_name
+WHERE column_1 = 'blablabla';
+----------------------------------------------------------------------------
+# New clauses and Operators in SQL
+WHERE
+BETWEEN 	Between an inclusive range
+IN
+OR  		SQL processing AND before OR
+AND 		SQL processing AND before OR
+NOT
+LIKE
+ORDER BY
+GROUP BY
+
+#Example of BETWEEN
+SELECT column_1
+,column_2
+,column_3
+FROM table_name
+WHERE column_3 BETWEEN 10 AND 20;
+
+#Example of IN
+SELECT column_1
+,column_2
+,column_3
+FROM table_name
+WHERE column_2 IN (9,10,11);
+# srif wo rows jin k column_2 ki values (9,10,11) me sy koi 1 h
+
+#Example of OR
+SELECT column_1
+,column_2
+,column_3
+FROM table_name
+WHERE column_3 = 'amir' OR 'hamza';
+
+#Example of NOT
+SELECT *
+FROM table_name
+WHERE NOT column_1 = 'bla_1' AND NOT column_1='bla_2;
+
+# IN vs. OR
+IN works the same as OR.
+Benefits of IN:
+	1- long list of options
+	2- IN executes faster than OR
+	3- Don't have to think about the order with IN
+	4- Can contain another SELECT
+
+NOTE: if you're using OR and AND together be careful about order of operations and use parentheses
+----------------------------------------------------------------------------
+# Operator
+=			Equal
+<>			Not equal
+> 		
+< 		
+>=
+<=		
+IS NULL 	 Is a null value
+
+
+#Example of IS NULL
+SELECT column_1
+,column_2
+,column_3
+FROM table_name
+WHERE column_3 IS NULL;
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------								Wildcards 																Wildcards
+----------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+Wildcards:
+	allow more precise search capabilities
+	Special character used to match partsof a value
+	Search pattern made from literal text, Wildcard character, or a combination
+	uses LIKE as an operator(though technically a predicate)
+	can only be  used with strings
+	cannot be used for non-text datatypes
+	Helpful for data scientist as they explore string variables
+	not match NULLs
+----------------------------------------------------------------------------
+----------------- % -----------------
+'%Pizza'   		= Grabs anything ending with the word Pizza
+'Pizza%'   		= Grabs anything after the word Pizza
+'%Pizza%'  		= Grabs anything before and after the word Pizza
+
+'S%E' 	   		= Grabs anything that starts with "S" and ends with "E" (like sadie)
+'t%@gmail.com'	= Grabs gmail addresses that start with "t"
+
+----------------- _ -----------------
+
+WHERE column_n LIKE '_Pizza' # Note: not supported by DB2
+# output:
+	spizza
+	mpizza
+# equal to: column_n LIKE '%Pizza'
+
+-----------------[]----------------
+
+Bracket [] Wildcard:
+	used to specify a set of characters in a specific location
+	Does not work with all DBMS
+	Does not work with SQLite
+----------------------------------------------------------------------------
+ Downsides of Wildcards:
+ 	Takes longer to run
+ 	Better to use another operator (if possible): =, <, =, AND etc.
+ 	Statements with Wildcards will take longer to run if used at the end of search patterns
+ 	Placement of Wildcards is important
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------								Sort data 																Sort Data
+----------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+ORDER BY 
+	allows user to sort data by particular columns
+	Takes the name of one or more columns
+	Add a comma after each additional column name
+	Can sort by a column not retrieved
+	Must always be the last clause in a select statement
+----------------------------------------------------------------------------
+ORDER BY 2,3	# 2 means 2nd columnn and 3 means 3rd column, etc
+----------------------------------------------------------------------------
+Sort Direction
+
+DESC = descending order
+ASC  = ascending order
+
+Only applies to the  column names it directly precedes
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------								Math operations 													Math operations
+----------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+Multiplication Example:
+SELECT
+column_1
+,column_2
+,column_3 * column_4 AS calculated_column
+FROM table_name
+
+# it returns 3 columns: column_1, column_2, calculated_column
+----------------------------------------------------------------------------
+Order of Operations:
+parentheses
+Exponents
+Multiplication
+Division
+Addition
+Subtraction
+"Please excuse my dear Anty Sally"
+----------------------------------------------------------------------------
+Combining Math Operations
+SELECT column_1
+,column_2
+,column_3
+,(column2-column_5)/column_3 AS calculated_column
+FROM table;
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------									Aggregate 														Aggregate
+----------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+Aggregate
+	used to summamrize data
+	Finding the highest and lowest values
+	Finding the total number of rows
+	Finding the average value
+	etc..
+----------------------------------------------------------------------------
+Aggregate functions:
+AVG()		# ignoring NULL values
+COUNT()
+MIN() 		# ignoring NULL values
+MAX()		# ignoring NULL values
+SUM()
+----------------------------------------------------------------------------
+AVG:
+	SELECT AVG(column_5) AS avg_column_5
+	FROM table_name
+
+note: AVG() ignore rows containing NULL values
+----------------------------------------------------------------------------
+COUNT:
+	SELECT COUNT (*) AS total_customers
+	FROM table_name;
+# COUNT(*) counts all the rows in a table containing values or NULL values
+
+	SELECT COUNT(CustomerID) AS	total_customers
+	FROM table_name
+# Count(column) counts all the rows in a specific column ignoring NULL values
+----------------------------------------------------------------------------
+MAX:
+	SELECT MAX(column_name) AS max_column_price
+	FROM table_name
+----------------------------------------------------------------------------
+MAX and MIN:
+	SELECT MAX(column_1) AS max_column_price
+	,MIN(column_1) AS min_column_price
+	FROM table_name
+----------------------------------------------------------------------------
+MIN:
+	same as MAX
+----------------------------------------------------------------------------
+SUM:
+	same as MAX, MIN
+----------------------------------------------------------------------------
+SUM (with condition):
+	SELECT SUM(column_1*column_2) AS total_of_2columns
+	FROM table_name
+	WHERE column_n = 24;
+----------------------------------------------------------------------------
+DISTINCT
+
+Using DISTINCT on Aggregate Functions
+	<skiping duplicated in specific column> amir
+	if DISTINCT is not specified, ALL is assumed
+	Cannot use DISTINCT on COUNT(*)
+	No value to use with MIN and MAX functions
+SELECT COUNT(DISTINCT column_n)
+FROM table_name
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------									Grouping Data 													Grouping Data
+----------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+
+GROUP BY
+	can contain multiple columns
+	Every column in your SELECT statement must be present in a GROUP BY clause, except for aggregated  calculations
+	NULLs will be grouped together if your GROUP BY column contains NULLs
+	WHERE does not work for groups because WHERE filters on rows, instead use HAVING clause to filter for groups
+
+SELECT
+Region
+,COUNT(CustomerID) AS total_customers
+FROM table_name
+GROUP by Region;
+
+HAVING Example:
+
+	SELECT
+	CustomerID
+	,COUNT (*) AS orders
+	FROM table_name
+	GROUP BY CustomerID
+	HAVING COUNT (*) >= 2
+----------------------------------------------------------------------------
+WHERE vs. HAVING
+WHERE filters before data is grouped
+HAVING filters after data is grouped
+Rows eliminated by the WHERE vlause will not be a included in the group
+----------------------------------------------------------------------------
+ORDER BY with GROUP BY
+
+ORDER BY 
+	sorts data
+	its a last thing that we put in our query
+
+GROUP BY does not sort data
+
+SELECT column_1
+,column_2
+FROM table_name
+GROUP BY column_1
+ORDER BY column_2 DESC;
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------						Subqueries and Joins 													Subqueries and Joins
+----------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+Subqueries
+	Queries embedded into other queries
+	Relational Databases store data in multiple tables
+	Subqueries merge data from multiple sources together
+	Helps with adding other filtering criteria
+	There is no limit to the number of subqueries you can have
+	Performance slows when you nest too deeply
+	Subquery selects can only retrieve a single column
+	Not always the best option due to Performance
+ 	just one of many teqniques we can use to combine information together from multiple tables
+
+2 tables me sy alag alag data nikal kar 1 sath jorna
+
+
+Note: It is a really important when you working with subqueries is make sure indenting things, this is help you a lot
+
+SELECT CustomerID
+,CompanyName
+,Region
+FROM Customers_table
+WHERE CustomerID in (SELECT
+customerID
+FROM orders_table
+Where column_4 > 100);
+
+Always Perform the innermost SELECT portion first
+if i am looking somebody's query and try to trebelshot it i always start with innermost queriy to see what's going on
+----------------------------------------------------------------------------
+ Subquery in Subquery
+
+ SELECT Customer_name, Customer_contact
+ FROM cust_table IN
+ 	SELECT customer_id
+ 	FROM orders_table
+ 	WHERE order_number IN ( SELECT order_number
+ 								FROM OrderItems_table
+ 								WHERE product_name = 'Toothbrush');
+----------------------------------------------------------------------------
+Subqueries for Calculations
+
+# task: Total number of orders placed by every customer
+
+SELECT COUNT(*) AS orders
+FROM Orders
+WHERE customer_id = '143569';
+
+SELECT customer_name
+	,customer_state(SELECT COUNT(*) AS orders FROM Orders WHERE Orders.customer_id = Customer.customer_id) AS orders
+FROM customers
+ORDER BY customer_name
+----------------------------------------------------------------------------
+						Joins
+----------------------------------------------------------------------------
+Benefits of Breaking Data into Tables
+	Efficient storage
+	Easier manipulation
+	Greater scalability
+	Logically models a process
+	Tables are related through common valuse(keys)
+
+it is important to know the JOIN is not a phisical entity, in other words it does not create anything perminent, it only exist duration of ther query execution to help you get that information you're trying to get..
+there are severel types of Joins
+----------------------------------------------------------------------------
+
+----------------------------------------------------------------------------
+
+----------------------------------------------------------------------------
+
+----------------------------------------------------------------------------
+
+----------------------------------------------------------------------------
+
+----------------------------------------------------------------------------
+
+----------------------------------------------------------------------------
+
+----------------------------------------------------------------------------
+
+----------------------------------------------------------------------------
+
+----------------------------------------------------------------------------
+
+----------------------------------------------------------------------------
+
+----------------------------------------------------------------------------
+
+----------------------------------------------------------------------------
+
+----------------------------------------------------------------------------
+
+----------------------------------------------------------------------------
+
+----------------------------------------------------------------------------
+
+----------------------------------------------------------------------------
+
+----------------------------------------------------------------------------
