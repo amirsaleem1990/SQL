@@ -43,7 +43,9 @@ Relationship: Describes association among entities:
 ----------------------------------------------------------------------------
 ER model <https://d3c33hcgiwev3.cloudfront.net/JIQNlAqcEei8LQpwydYI3g.processed/full/540p/index.webm?Expires=1541808000&Signature=FePpr~ZG-hWl5-dmrIQ3rxB41Es1BkJ0elECyXrw0501crarca7plbwEwnr~un4vxx7hDZa9RQ5pug23KhMgvDIcIE1OuBLqDotmt0RUZzUsFw82DnI0tOktd-kn6x9G~VP7kjUwyXYtyJyi0xWvsrB37XOXNN0X2CsX0lS0ptc_&Key-Pair-Id=APKAJLTNE6QMUY6HBC5A>
 dubare repeat karna h, samajh nahi aaya
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------								Retrieve Data 															Retrieve Data
+----------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+								Retrieve Data 															Retrieve Data
 ----------------------------------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------------------------
 # SELECT for one column
@@ -79,7 +81,9 @@ WHERE ROWNUM <= 5;
 SELECT column
 FROM table
 FETCH FIRST 5 ROWS ONLY;
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------								Create Data 															Create Data
+----------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+								Create Data 															Create Data
 ----------------------------------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------------------------
 # create table (not a data, but column names, type of data in each column ... etc)
@@ -155,7 +159,9 @@ SELECT column_1
 */
 ,column_4
 from table_name
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------								Operators 																Operators
+----------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+								Operators 																Operators
 ----------------------------------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------------------------
 # WHERE clause operators
@@ -234,7 +240,9 @@ SELECT column_1
 ,column_3
 FROM table_name
 WHERE column_3 IS NULL;
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------								Wildcards 																Wildcards
+----------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+								Wildcards 																Wildcards
 ----------------------------------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------------------------
 Wildcards:
@@ -275,7 +283,9 @@ Bracket [] Wildcard:
  	Better to use another operator (if possible): =, <, =, AND etc.
  	Statements with Wildcards will take longer to run if used at the end of search patterns
  	Placement of Wildcards is important
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------								Sort data 																Sort Data
+----------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+								Sort data 																Sort Data
 ----------------------------------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------------------------
 ORDER BY 
@@ -293,7 +303,9 @@ DESC = descending order
 ASC  = ascending order
 
 Only applies to the  column names it directly precedes
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------								Math operations 													Math operations
+----------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+								Math operations 													Math operations
 ----------------------------------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------------------------
 Multiplication Example:
@@ -320,7 +332,9 @@ SELECT column_1
 ,column_3
 ,(column2-column_5)/column_3 AS calculated_column
 FROM table;
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------									Aggregate 														Aggregate
+----------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+									Aggregate 														Aggregate
 ----------------------------------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------------------------
 Aggregate
@@ -381,7 +395,9 @@ Using DISTINCT on Aggregate Functions
 	No value to use with MIN and MAX functions
 SELECT COUNT(DISTINCT column_n)
 FROM table_name
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------									Grouping Data 													Grouping Data
+----------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+									Grouping Data 													Grouping Data
 ----------------------------------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------------------------
 
@@ -424,7 +440,9 @@ SELECT column_1
 FROM table_name
 GROUP BY column_1
 ORDER BY column_2 DESC;
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------						Subqueries and Joins 													Subqueries and Joins
+----------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+						Subqueries and Joins 													Subqueries and Joins
 ----------------------------------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------------------------
 Subqueries
@@ -601,40 +619,285 @@ UNION
 SELECT City, Country FROM Suppliers
 WHERE Country='Germany'
 ORDER BY City;
-----------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+						Modifying the data 													Modifying the data
+----------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+String:
 
+String Functions:
+	Concatenate
+	Substring
+	Trim
+		RTRIM
+		LTRIM
+		TRIM
+	Upper
+	Lower
 ----------------------------------------------------------------------------
+Concatenate:
 
+SELECT CompanyName
+, ContactName
+, CompanyName || ' (' || ContactName || ')'
+FROM customers_table
+
+Note: SQL server support <+> instead of <||>
+#in pandas: 
+	df['new_column'] = df.CompanyName + '(' + df.ContactName + ')'
 ----------------------------------------------------------------------------
+TRIM:
 
+SELECT TRIM("	You the best.	") AS TrimmdeString;
 ----------------------------------------------------------------------------
+Substring:
 
+Returns the specified number of characters from a particular position of a givin string
+
+SUBSTR(string name
+	, string position
+	, number of characters to be returned);
+
+SELECT first_name
+, SUBSTR (first_name, 2, 3)
+FROM Employees_table
+WHERE department_id = 60;
+# in pandas:
+	df['new'] = df.CompanyName.str[2:2+3] # ignoring the condition <WHERE departmend_id = 60>
 ----------------------------------------------------------------------------
-
+Upper:
+	SELECT UPPER(column_name) FROM table_name;
 ----------------------------------------------------------------------------
-
+LOWER:
+	SELECT LOWER(column_name) FROM table_name;
 ----------------------------------------------------------------------------
+UCASE:
+	SELECT LOWER(column_name) FROM table_name;
+----------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+						Date and Time 														Date and Time
+----------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+Date:
+	"As long as your data contains only the date portion, your queries wilkl work as expected. However, if a time portion is involved, it gets more complicated"
+	"The most difficult part when working with dates is to be sure  that the format of the date you are trying to insert, maatches the format of the date column in the database."
+	"Dates are stored as datetypes"
+	"Each DBMS uses it's own variety of datatypes"
 
+Wednesday, September 17th, 2008
+9/17/2008 5:14:56 P.M. EST
+9/17/2008 19:14:56 P.M. GMT
+2612008 (Julian format)
+
+DATE
+Format: YYYY-MM-DD
+
+DATETIME
+Format: YYYY-MM-DD HH:MI:SS
+
+TIMESTAMP
+Format: YYYY-MM-DD HH:MI:SS
+
+if you Query a DATETIME with: 
+	WHERE PuchaseDatee = '2016-12-12'
+You will get no results, because there is also HOURS, MINITS, and SECONDS that should be inclued in your query
 ----------------------------------------------------------------------------
-
+SQLite support 5 date and time functions:
+	DATE(timestring, modifier, modifier, ...)
+	TIME(timestring, modifier, modifier, ...)
+	DATETIME(timestring, modifier, modifier, ...)
+	JULIANDAY(timestring, modifier, modifier, ...)
+	STRFTIME(format, timestring, modifier, modifier, ...)
 ----------------------------------------------------------------------------
+Timestrings:
+	
+A time string are what you want to extract from the Datetime function.
+we have a lot of diffirent Timestrings that we can use:
 
+YYYY-MM-DD
+YYYY-MM-DD HH:MM
+YYYY-MM-DD HH:MM:SS
+YYYY-MM-DD HH:MM:SS.SSS
+YYYY-MM-DDTHH:MM
+YYYY-MM-DDTHH:MM:SS
+YYYY-MM-DDTHH:MM:SS.SSS
+HH:MM
+HH:MM:SS
+HH:MM:SS.SSS
 ----------------------------------------------------------------------------
+Modifiers:
+	NNN days------------start of year
+	NNN hours-----------start of day
+	NNN minutes---------weekday N
+	NNN.NNNN seconds----unixepoch
+	NNN months----------localtime
+	NNN years-----------utc
+	start of month 		
 
+a timestring can be followed by 0 modifiers or multiple modifires, each modifier transforms that is apply to the time value is applied from left to right, the order is very important when you apply a modifieres. 
 ----------------------------------------------------------------------------
-
+SELECT Birthdate_column
+,STRFTIME('%Y', Birthdate_column) AS Year
+,STRFTIME('%m', Birthdate_column) AS Month
+,STRFTIME('%d', Birthdate_column) AS Day
+FROM employees_table
+# return 3 new columns <Year> containing year of birth, <Month> containing month of birth, and <Day> containing day of birth
 ----------------------------------------------------------------------------
-
+Current Date:
+	SELECT DATE('now');
 ----------------------------------------------------------------------------
-
+Year, Month and Day for the current Date:
+	SELECT STRFTIME('%Y %m %d', 'now'); 
 ----------------------------------------------------------------------------
-
+Hour, Minute, Seconds and Milliseconds from Current DATETIME:
+	SELECT STRFTIME('%H %M %S %s', 'now');
 ----------------------------------------------------------------------------
+# Compute Age using Birthdate
+SELECT Birthdate
+,STRFTIME('%Y', Birthdate) AS Year
+,STRFTIME('%m', Birthdate) AS Month
+,STRFTIME('%d', Birthdate) AS Day
+,DATE(('now') - Birthdate) AS Age
+FROM employees_table
+# return 5 columns, Birthdate, Year, Month, Day, Age
+----------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+						Case Statements 														Case Statements
+----------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+Case Statements:
+	Mimics if-then-else Statements found in most programing languages
+	Can be used in SELECT, INSERT, update and DELETE statements
 
+CASE 
+WHEN C1 THEN E1
+WHEN C2 THEN E2
+....
+ELSE [result else]
+END
+
+
+CASE input_	expression 
+	WHEN when_expression THEN result_expression [...n]
+	[ELSE else_result_expression]
+END
+
+
+SELECT
+EmployeeID
+,first_name
+,LastName
+,city
+,CASE city
+	WHEN 'calgary' THEN 'calgary' ELSE 'Other' END calgary # END k bad new column ka nime define kya h
+	FROM Employees_table
+	ORDER BY LastName, first_name;
+
+# 1 naya column <calgary> banao, jab <city> me 'calgary' ho to new column me bhi 'calgary' dal do, warna 'Other' daal do
 ----------------------------------------------------------------------------
+SELECT 
+trackID
+,name
+,bytes
+,CASE
+WHEN bytes < 30000 THEN 'small'
+WHEN bytes >= 30000 AND bytes <= 50000 THEN 'mediam'
+WHEN bytes >= 50001 THEN 'large'
+ELSE 'Other'
+END bytescategory
+FROM Tracks_table;
+----------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+						Views 																					Views
+----------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+Views:
+	Can add or remove columns without changing Schema
+	Use it to encapsulate queries
+	The view will be removed after database connection has ended
 
+we are always combining data from multiple sources or transforming it in some way. As you know,  sometimes things like the order of operations can get a little ricky. Instead of creating a whole new table, sometimes we can create the illusion of a table by using a view.
+A view is essentially a stored query, and it helps us clean up our queries and simplify when we have to write.
+In a view, you can add or remove columns without changing the schema.  You're not actually writing the query to the database or  anything, what you're doing is you're kind of storing it for the time being. This is really helpful and pays off when we use it to encapsulate queries
+The beauty of the view is that it can be used like a table. But it's unlike a table in that you don't have to have ETL or run ETL on any of the data. This helps a lot by encapsulating complex queries or complex calculations that you're trying to write.
+It can really help simplify it.
+It can also be used in pretty much any database, except for stored procedures.
+Views are really most helpful if you need to join a set of tables and  you're having trouble getting calculations.  Particularly those complex ones dealing with the order of operations in the right  order to get the output you're looking for.
+Another benefit of views includes different securities or  write capabilities.  We talked about not being able to write data to an environment or to a particular database.
+Views are helpful because you're creating a view of a table but not actually writing data to that table.  This is a way to get around some of those database writing limitations.
+Another thing that views are helpful for is to create a stepping stone in multilevel queries.  For example, let's say you create a query that counts the number of cells that each person has made. You could then write a query that groups the salespeople into a particular group. Then you can count the sales of that group as well.
+It just creates this multilevel dimension that you wouldn't have been able to do elsewhere.
+And then, it also helps so that you're not transferring any data through and ETL process.
+Views are definitely something that will come in handy, if you're in a particularly sticky situation or having some trouble with your calculation. It can definitely make things a lot easier for you.
+
+
+CREATE [TEMP] VIEW [IF NOT EXISTS] view_name(column-name-list) AS select-statement;
+
+
+CREATE VIEW my_view
+AS
+SELECT
+rregiondescription
+,t.territorydescription
+,e.Lastname
+,e.Fistname
+,e.Hiredate
+,e.Reportsto
+FROM Region r
+INNER JOIN Territiories t on r.regionid = t.regionid
+INNER JOIN Employeeterritories et on t.TerritoryID = et.TerritoryID
+INNER JOIN Employees e on et.employeeid = e.EmployeeID
+
+# my view name is my_view, if i need to see my view:
+	SELECT *
+	FROM my_view;
+
+# not need your view?
+DROP VIEW my_view;
+
+# Get a count of how many territories each employee has
+SELECT count(territorydescription)
+,Lastname
+,Firstname
+FROM my_view
+GROP BY Lastname, Firstname;
 ----------------------------------------------------------------------------
-
-----------------------------------------------------------------------------
-
+Working Through a Problem from Beginning to End
+	1- Data Understanding
+		1- Most Importtant step
+		2- Understanding relationships in your data
+		3- NULL values
+		4- String Values
+		5- Dates and times
+	2- Subject Area and  Businuess Understanding
+		1- Until you gain businuess understanding, writing queries may take more time
+		2- Understanding where data joins are
+		3- Differentiating integers from strings
+		4- Investing time to understand your subject will help later during data analysis
+	3- Profilling
+		1- Get into the details of your data
+		2- Create a data model and map the fields and tables you need
+		3- Consider joins and calculations
+		4- Understand any data quality or format issues
+	4- Start with SELECT
+		1- Start simple
+		2- Any query begins with SELECT statement
+		3- Add in special formatting
+		4- if using subqueries, start with the inner-most query and work outward
+	5- Test and Troubleshoot
+		1- do not wait until the end to test queries
+		2- Test after each join or filter
+		3- Are you getting the results you expect?
+		4- Start small and go step by step when troubleshooting a query.
+	6- Format & Comment
+		1- Use correct formatting and identation
+		2- Comment strategically
+		3- Clean code and comments help when you revisit or hand off code
+	7- Review
+		1- always revies old queries
+		2- Business rules
+		3- Date changes
+		4- Date indicators
+		5- Work the problem for beginning to end
 ----------------------------------------------------------------------------
