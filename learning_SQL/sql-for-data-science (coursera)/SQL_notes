@@ -52,15 +52,8 @@ dubare repeat karna h, samajh nahi aaya
 SELECT colum_name 
 FROM table;
 ----------------------------------------------------------------------------
-# SELECT for morethan one column
+# SELECT for more than one column
 SELECT column_1, column_2, column_3 
-FROM table;
-
-or 
-
-SELECT column_1
-		, column_2
-		, column_3
 FROM table;
 ----------------------------------------------------------------------------
 # Select all tables
@@ -165,11 +158,7 @@ from table_name
 ----------------------------------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------------------------
 # WHERE clause operators
-SELECT column_1, column_2
-FROM table_name
-WHERE column_n operator value;
 
-eg:
 SELECT column_1
 ,column_2
 ,column_3
@@ -455,9 +444,6 @@ Subqueries
 	Subquery selects can only retrieve a single column
 	Not always the best option due to Performance
  	just one of many teqniques we can use to combine information together from multiple tables
-
-2 tables me sy alag alag data nikal kar 1 sath jorna
-
 
 Note: It is a really important when you working with subqueries is make sure indenting things, this is help you a lot
 
