@@ -43,6 +43,7 @@ Relationship: Describes association among entities:
 ----------------------------------------------------------------------------
 ER model <https://d3c33hcgiwev3.cloudfront.net/JIQNlAqcEei8LQpwydYI3g.processed/full/540p/index.webm?Expires=1541808000&Signature=FePpr~ZG-hWl5-dmrIQ3rxB41Es1BkJ0elECyXrw0501crarca7plbwEwnr~un4vxx7hDZa9RQ5pug23KhMgvDIcIE1OuBLqDotmt0RUZzUsFw82DnI0tOktd-kn6x9G~VP7kjUwyXYtyJyi0xWvsrB37XOXNN0X2CsX0lS0ptc_&Key-Pair-Id=APKAJLTNE6QMUY6HBC5A>
 dubare repeat karna h, samajh nahi aaya
+ERD: It is a key element to understanding how we can pull data from multiple tables.
 ----------------------------------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------------------------
 								Retrieve Data 															Retrieve Data
@@ -229,6 +230,15 @@ SELECT column_1
 ,column_3
 FROM table_name
 WHERE column_3 IS NULL;
+# wo rows jin k column_3 me NULL h srif wohi rows
+
+#Example of IS NOT NULL
+SELECT column_1
+,column_2
+,column_3
+FROM table_name
+WHERE column_3 IS NULL;
+# wo rows jin k column_3 me NULL h un k ilawa sary data k 3 columns
 ----------------------------------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------------------------
 								Wildcards 																Wildcards
@@ -334,17 +344,21 @@ Aggregate
 	etc..
 ----------------------------------------------------------------------------
 Aggregate functions:
-AVG()		# ignoring NULL values
-COUNT()
-MIN() 		# ignoring NULL values
-MAX()		# ignoring NULL values
-SUM()
+AVG()		# ignoring NULL values, return a scalar value
+COUNT()		# count all non-null values, return a scalar value
+MIN() 		# ignoring NULL values, return a scalar value
+MAX()		# ignoring NULL values, return a scalar value
+SUM()		# return a scalar value
+
+MEDIAN - Expert Tip
+One quick note that a median might be a more appropriate measure of center for this data, but finding the median happens to be a pretty difficult thing to get using SQL alone — so difficult that finding a median is occasionally asked as an interview question.
 ----------------------------------------------------------------------------
 AVG:
 	SELECT AVG(column_5) AS avg_column_5
 	FROM table_name
 
 note: AVG() ignore rows containing NULL values
+If you want to count NULLs as zero, you will need to use SUM and COUNT. However, this is probably not a good idea if the NULL values truly just represent unknown values for a cell. 
 ----------------------------------------------------------------------------
 COUNT:
 	SELECT COUNT (*) AS total_customers
@@ -358,6 +372,9 @@ COUNT:
 MAX:
 	SELECT MAX(column_name) AS max_column_price
 	FROM table_name
+
+*Expert Tip
+Functionally, MIN and MAX are similar to COUNT in that they can be used on non-numerical columns. Depending on the column type, MIN will return the lowest number, earliest date, or non-numerical value as early in the alphabet as possible. As you might suspect, MAX does the opposite—it returns the highest number, the latest date, or the non-numerical value closest alphabetically to “Z.”
 ----------------------------------------------------------------------------
 MAX and MIN:
 	SELECT MAX(column_1) AS max_column_price
@@ -382,6 +399,21 @@ Using DISTINCT on Aggregate Functions
 	if DISTINCT is not specified, ALL is assumed
 	Cannot use DISTINCT on COUNT(*)
 	No value to use with MIN and MAX functions
+
+DISTINCT is always used in SELECT statements, and it provides the unique rows for all columns written in the SELECT statement. Therefore, you only use DISTINCT once in any particular SELECT statement.
+You could write:
+SELECT DISTINCT column1, column2, column3
+FROM table1;
+
+which would return the unique (or DISTINCT) rows across all three columns.
+You would not write:
+SELECT DISTINCT column1, DISTINCT column2, DISTINCT column3
+FROM table1;
+
+You can think of DISTINCT the same way you might think of the statement "unique".
+It’s worth noting that using DISTINCT, particularly in aggregations, can slow your queries down quite a bit.
+	
+
 SELECT COUNT(DISTINCT column_n)
 FROM table_name
 ----------------------------------------------------------------------------------------------------------------------
@@ -396,11 +428,28 @@ GROUP BY
 	NULLs will be grouped together if your GROUP BY column contains NULLs
 	WHERE does not work for groups because WHERE filters on rows, instead use HAVING clause to filter for groups
 
+Expert Tip
+Before we dive deeper into aggregations using GROUP BY statements, it is worth noting that SQL evaluates the aggregations before the LIMIT clause. If you don’t group by any columns, you’ll get a 1-row result—no problem there. If you group by a column with enough unique values that it exceeds the LIMIT number, the aggregates will be calculated, and then some rows will simply be omitted from the results.
+
+This is actually a nice way to do things because you know you’re going to get the correct aggregates. If SQL cuts the table down to 100 rows, then performed the aggregations, your results would be substantially different. The above query’s results exceed 100 rows, so it’s a perfect example. In the next concept, use the SQL environment to try removing the LIMIT and running it again to see what changes.
+
+The order of column names in your GROUP BY clause doesn’t matter—the results will be the same regardless. If we run the same query and reverse the order in the GROUP BY clause, you can see we get the same results.
+
+As with ORDER BY, you can substitute numbers for column names in the GROUP BY clause. It’s generally recommended to do this only when you’re grouping many columns, or if something else is causing the text in the GROUP BY clause to be excessively long.
+
+A reminder here that any column that is not within an aggregation must show up in your GROUP BY statement. If you forget, you will likely get an error. However, in the off chance that your query does work, you might not like the results!
+
+
 SELECT
 Region
 ,COUNT(CustomerID) AS total_customers
 FROM table_name
 GROUP by Region;
+
+
+HAVING:
+HAVING is the “clean” way to filter a query that has been aggregated, but this is also commonly done using a subquery. Essentially, any time you want to perform a WHERE on an element of your query that was created by an aggregate, you need to use HAVING instead.
+
 
 HAVING Example:
 
@@ -490,7 +539,11 @@ Benefits of Breaking Data into Tables
 	Greater scalability
 	Logically models a process
 	Tables are related through common valuse(keys)
-
+---
+# https://classroom.udacity.com/courses/ud198/lessons/8f23fc69-7c88-4a94-97a4-d5f6ef51cf7b/concepts/6bcadea2-78dd-4aa5-a9f1-f84be429067b
+Notice our SQL query has the two tables we would like to join - one in the FROM and the other in the JOIN. Then in the ON, we will ALWAYs have the PK equal to the FK:
+The way we join any two tables is in this way: linking the PK and FK (generally in an ON statement).
+---
 ----------------------------------------------------------------------------
 JOINS:
 	Associate correct records from each table on the fly
@@ -500,7 +553,7 @@ JOINS:
 ----------------------------------------------------------------------------
 JOINS types:
 	Cartesian (cross) Joins
-	Inner Joins
+	Inner Joins / JOINS
 	Left
 	Right
 	FULL Outer
@@ -517,6 +570,7 @@ FROM suppliers CROSS JOIN table_name;
 # the ouput will be the number of joins in the 1st table multiplied by the number of rows in the 2nd table
 ----------------------------------------------------------------------------
 Inner Joins:
+	the data you join in inner join can have a one to one or a one to many relationship.
 	most frequantly used JOINS in SQL
 	select records that have matching values in both tables
 	no limit what you can join, 
@@ -561,14 +615,14 @@ Left, Right, and Full Outer Joins
 note: SQLite only does Left Joins
 Other DBMS use all joins
 ----------------------------------------------------------------------------
-Left Join
+Left Join = LEFT OUTER JOIN
 
 SELECT C.CustomerName, o.orderID
 FROM Customers C
 LEFT JOIN Orders O ON C.CustomerID = O.CustomerID
 ORDER BY C.CustomerName;
 ----------------------------------------------------------------------------
-Right Join
+Right Join = RIGHT OUTER JOIN
 note: not supported by SQLite
 
 SELECT Orders.OrderID, Employees.LastName, Employees.FirstName
@@ -576,8 +630,9 @@ FRom Orders
 RIGHT JOIN Employees ON Orders.EmployeeID = Employees.EmployeeID
 ORDER BY Orders.OrderID;
 ----------------------------------------------------------------------------
-Full Outer Join 
+FULL OUTER JOIN = OUTER JOIN
 note: not supported by SQLite
+The use cases for a full outer join are very rare
 
 SELECT Customers.CustomerName, Orders.OrderID
 FROM Customers
@@ -747,6 +802,43 @@ SELECT Birthdate
 ,DATE(('now') - Birthdate) AS Age
 FROM employees_table
 # return 5 columns, Birthdate, Year, Month, Day, Age
+----------------------------------------------------------------------------
+DATE_TRUNC
+
+DATE_TRUNC allows you to truncate your date to a particular part of your date-time column. Common trunctions are day, month, and year. Here (https://blog.modeanalytics.com/date-trunc-sql-timestamp-function-count-on/) is a great blog post by Mode Analytics on the power of this function. 
+
+example:
+
+RESULT:						INPUT:
+2017-04-01 12:15:01			DATE_Trunc('second', 2017-04-01 12:15:01)
+2017-04-01 00:00:00			DATE_Trunc('day', 2017-04-01 12:15:01)
+2017-04-01 00:00:00			DATE_Trunc('month', 2017-04-01 12:15:01)
+2017-04-01 00:00:00			DATE_Trunc('year', 2017-04-01 12:15:01)
+----------------------------------------------------------------------------
+DATE_PART:
+
+DATE_PART can be useful for pulling a specific portion of a date, but notice pulling month or day of the week (dow) means that you are no longer keeping the years in order. Rather you are grouping for certain components regardless of which year they belonged in.
+
+For additional functions you can use with dates, check out the documentation here (https://www.postgresql.org/docs/9.1/static/functions-datetime.html), but the DATE_TRUNC and DATE_PART functions definitely give you a great start!
+
+You can reference the columns in your select statement in GROUP BY and ORDER BY clauses with numbers that follow the order they appear in the select statement. For example
+
+SELECT standard_qty, COUNT(*)
+
+FROM orders
+
+GROUP BY 1 (this 1 refers to standard_qty since it is the first of the columns included in the select statement)
+
+ORDER BY 1 (this 1 refers to standard_qty since it is the first of the columns included in the select statement)
+
+example
+
+RESULT:			INPUT:
+1				DATE_PART('second', 2017-04-01 12:15:01)
+1				DATE_PART('day', 2017-04-01 12:15:01)
+4				DATE_PART('month', 2017-04-01 12:15:01)
+2017			DATE_PART('year', 2017-04-01 12:15:01)
+6				DATE_PART('dow', 2017-04-01 12:15:01) # 'dow' stands for 'day of week'
 ----------------------------------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------------------------
 						Case Statements 														Case Statements
@@ -755,7 +847,11 @@ FROM employees_table
 Case Statements:
 	Mimics if-then-else Statements found in most programing languages
 	Can be used in SELECT, INSERT, update and DELETE statements
+	The CASE statement always goes in the SELECT clause # https://classroom.udacity.com/courses/ud198/lessons/76a484da-1f2e-4886-ba2c-684bb30e267d/concepts/5a1c618b-1597-4947-8980-84d49b8415e6
+	CASE must include the following components: WHEN, THEN, and END. ELSE is an optional 
+	You can include multiple WHEN statements, as well as an ELSE statement again, to deal with any unaddressed conditions.
 
+	
 CASE 
 WHEN C1 THEN E1
 WHEN C2 THEN E2
@@ -887,4 +983,16 @@ Working Through a Problem from Beginning to End
 		4- Date indicators
 		5- Work the problem for beginning to end
 ----------------------------------------------------------------------------
-note: you can't delete particuler field from tha observation, yes, you can updated it.
+* note: you can't delete particuler field from tha observation, yes, you can updated it.
+* Notice, traditional databases do not allow for many-to-many relationships, as these break the schema down pretty quickly. A very good answer is provided here <https://stackoverflow.com/questions/7339143/why-no-many-to-many-relationships>. 
+* The types of relationships that exist in a database matter less to analysts, but you do need to understand why you would perform different types of JOINs, and what data you are pulling from the database
+* If you have two or more columns in your SELECT that have the same name after the table name such as accounts.name and sales_reps.name you will need to alias them. Otherwise it will only show one of the columns. You can alias them like accounts.name AS AcountName, sales_rep.name AS SalesRepName
+* There are two common ways in which you are likely to encounter NULLs:
+
+    NULLs frequently occur when performing a LEFT or RIGHT JOIN. You saw in the last lesson - when some rows in the left table of a left join are not matched with rows in the right table, those rows will contain some NULL values in the result set.
+
+    NULLs can also occur from simply missing data in our database.
+* Aggregation Reminder
+
+An important thing to remember: aggregators only aggregate vertically - the values of a column. If you want to perform a calculation across rows, you would do this with (simple arithmetic https://community.modeanalytics.com/sql/tutorial/sql-operators/#arithmetic-in-sql) .
+* 
