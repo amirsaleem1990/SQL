@@ -304,6 +304,99 @@ ASC  = ascending order
 Only applies to the  column names it directly precedes
 ----------------------------------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------------------------
+								Date cleaning 														Date cleaning
+----------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+LEFT 		# pull limited number of charachters from left side
+RIGHT   	# pull limited number of charachters from right side
+LENGTH 		# return lenght of a string
+POSITION 	# Position of substring, like <index> or <find> in python string methods, return a number of position for
+ 			  particuler substring, 
+ 			  NOTE: this is case sensitive
+STRPOS		# same as POSITION, 
+			  NOTE: this is case sensitive
+LOWER 		# for lower case
+UPPER 		# for upper case
+CONCAT / ||	# Combines values from several columns into one column
+			  Note: SQL server support <+> instead of <||>
+CAST 		# Allow us to change columns from one data type to another, very usefull to turning strings into numbers or
+			  dates
+TRIM
+RTRIM
+LTRIM
+TRIM
+COALESCE	# return the first non_null value passed for each row
+SUBSTRING: 	# Returns the specified number of characters from a particular position of a givin string
+
+LEFT / RIGHT / LENGHT:
+	select first_name,
+	last_name
+	phone_number,
+	LEFT(phone_number, 3) AS area_code,
+	RIGTH(phone_number, 8) AS phone_number_only,
+	RIGTH(phone_number, LENGTH(phone_number) - 4 ) AS phone_number_alt) # this variable and phone_number_only variable are same.. since in this data we get <8> by processing this code <LENGTH(phone_number) - 4 )> which we hardcoded in phone_number_only variable.
+	from customer_data 
+
+POSITION / STRPOS / LOWER / UPPER:
+	SELECT fitst_name,
+	last_name,
+	city_state,
+	POSITION(',' IN city_state) AS comma_position,
+	STRPOS(city_state, ',') AS substr_comma_position, # same as POSITION
+	LOWER(city_state) AS lowercase,
+	UPPER(city_state) AS uppercase,
+	LEFT(city_state, POSITION(',' IN city_state)) AS city
+	from customer_data
+
+
+CONCAT:
+	SELECT first_name,
+	last_name,
+	CONCAT(first_name, ' ', last_name) AS full_name # altarnatively we can replace thin line by <first_name || ' ' || last_name AS full_name
+	from customer_data
+
+
+CAST  / :: :
+	# say we have 3 columns, year(2010, 2011..), day(1,2,3...) and month(january, feb...), we need this data as a single date..
+	SELECT *, 
+	DATE_PART('month', TO_DATE(month, 'month')) AS clean_month, # in this column we obtain <jan> as 1 and <feb> as 2..
+	year || '-' || DATE_PART('month', TO_DATE(month, 'month')) || '-' || day AS concatenated_datee, # now we have date in one column bat still this new created calumn has type string, we need to convert this column to date type
+	CAST(year || '-' || DATE_PART('month', TO_DATE(month, 'month')) || '-' || day AS date) AS formated_date # we can esily skip this line by using <::>, modify 2nd line in our code <yaer || '-' || .... > to  (year || '-' || DATE_PART('month', TO_DATE(month, 'month')) || '-' || day)::date AS formatted_date_alt
+	from ad_clicks
+	
+	# code above explaination
+	DATE_PART('month', TO_DATE(month, 'month')) 
+	here changed a month name into the number associated with that particular month.
+
+	Then you can change a string to a date using CAST. CAST is actually useful to change lots of column types. Commonly you might be doing as you saw here, where you change a string to a date using CAST(date_column AS DATE). However, you might want to make other changes to your columns in terms of their data types. You can see other examples here.
+
+	In this example, you also saw that instead of CAST(date_column AS DATE), you can use date_column::DATE.
+	
+COALESCE:
+	# task: column1 k andar jo bhi null hen un me 'no value' daal do
+	SELECT *,
+		COALESCE(column1, 'no entry') AS 'no value'
+		FROM table_name
+		WHERE column1 IS NULL
+
+TRIM:
+	SELECT TRIM("	You the best.	") AS TrimmdeString
+	from table_name;
+
+
+
+SUBSTRING:
+
+	SUBSTR(string name
+		, string position
+		, number of characters to be returned);
+
+	SELECT first_name
+	, SUBSTR (first_name, 2, 3)
+	FROM Employees_table
+	WHERE department_id = 60;
+----------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
 								Math operations 													Math operations
 ----------------------------------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------------------------
@@ -494,6 +587,8 @@ Subqueries
 	Not always the best option due to Performance
  	just one of many teqniques we can use to combine information together from multiple tables
 
+Both subqueries and table expressions are methods for being able to write a query that creates a table, and then write a query that interacts with this newly created table. Sometimes the question you are trying to answer doesn't have an answer when working directly with existing tables in database. 
+
 Note: It is a really important when you working with subqueries is make sure indenting things, this is help you a lot
 
 SELECT CustomerID
@@ -662,61 +757,6 @@ WHERE Country='Germany'
 ORDER BY City;
 ----------------------------------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------------------------
-						Modifying the data 													Modifying the data
-----------------------------------------------------------------------------------------------------------------------
-----------------------------------------------------------------------------------------------------------------------
-String:
-
-String Functions:
-	Concatenate
-	Substring
-	Trim
-		RTRIM
-		LTRIM
-		TRIM
-	Upper
-	Lower
-----------------------------------------------------------------------------
-Concatenate:
-
-SELECT CompanyName
-, ContactName
-, CompanyName || ' (' || ContactName || ')'
-FROM customers_table
-
-Note: SQL server support <+> instead of <||>
-#in pandas: 
-	df['new_column'] = df.CompanyName + '(' + df.ContactName + ')'
-----------------------------------------------------------------------------
-TRIM:
-
-SELECT TRIM("	You the best.	") AS TrimmdeString;
-----------------------------------------------------------------------------
-Substring:
-
-Returns the specified number of characters from a particular position of a givin string
-
-SUBSTR(string name
-	, string position
-	, number of characters to be returned);
-
-SELECT first_name
-, SUBSTR (first_name, 2, 3)
-FROM Employees_table
-WHERE department_id = 60;
-# in pandas:
-	df['new'] = df.CompanyName.str[2:2+3] # ignoring the condition <WHERE departmend_id = 60>
-----------------------------------------------------------------------------
-Upper:
-	SELECT UPPER(column_name) FROM table_name;
-----------------------------------------------------------------------------
-LOWER:
-	SELECT LOWER(column_name) FROM table_name;
-----------------------------------------------------------------------------
-UCASE:
-	SELECT LOWER(column_name) FROM table_name;
-----------------------------------------------------------------------------------------------------------------------
-----------------------------------------------------------------------------------------------------------------------
 						Date and Time 														Date and Time
 ----------------------------------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------------------------
@@ -839,6 +879,37 @@ RESULT:			INPUT:
 4				DATE_PART('month', 2017-04-01 12:15:01)
 2017			DATE_PART('year', 2017-04-01 12:15:01)
 6				DATE_PART('dow', 2017-04-01 12:15:01) # 'dow' stands for 'day of week'
+----------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+						Window Functions 														Window Functions
+----------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+ for more, wisit https://www.postgresql.org/docs/9.1/tutorial-window.html
+ 
+ a window function performs a calculation across a set of table rows that are somehow related to the current row. This is comparable to the type of calculation that can be done with an aggregate function. But unlike regular aggregate functions, use of a window function does not cause rows to become grouped into a single output row — the rows retain their separate identities. Behind the scenes, the window function is able to access more than just the current row of the query result.
+OVER and PARTITION BY are key to window functions. Not every window function uses PARTITION BY
+
+example:
+
+SELECT depname, empno, salary, avg(salary) OVER (PARTITION BY depname) FROM empsalary;
+
+  depname  | empno | salary |          avg          
+-----------+-------+--------+-----------------------
+ develop   |    11 |   5200 | 5020.0000000000000000
+ develop   |     7 |   4200 | 5020.0000000000000000
+ develop   |     9 |   4500 | 5020.0000000000000000
+ develop   |     8 |   6000 | 5020.0000000000000000
+ develop   |    10 |   5200 | 5020.0000000000000000
+ personnel |     5 |   3500 | 3700.0000000000000000
+ personnel |     2 |   3900 | 3700.0000000000000000
+ sales     |     3 |   4800 | 4866.6666666666666667
+ sales     |     1 |   5000 | 4866.6666666666666667
+ sales     |     4 |   4800 | 4866.6666666666666667
+
+ explaination:
+ The fourth column represents an average taken across all the table rows that have the same depname value as the current row. (This actually is the same function as the regular avg aggregate function, but the OVER clause causes it to be treated as a window function and computed across an appropriate set of rows.)
+
+
 ----------------------------------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------------------------
 						Case Statements 														Case Statements
@@ -983,6 +1054,14 @@ Working Through a Problem from Beginning to End
 		4- Date indicators
 		5- Work the problem for beginning to end
 ----------------------------------------------------------------------------
+WITH (CTE)
+
+when creating multiple tables using WITH, you add a comma after every table except the last table leading to your final query.
+The new table name is always aliased using <table_name AS>, which is followed by your query nested between parentheses.
+----------------------------------------------------------------------------
+
+
+
 * note: you can't delete particuler field from tha observation, yes, you can updated it.
 * Notice, traditional databases do not allow for many-to-many relationships, as these break the schema down pretty quickly. A very good answer is provided here <https://stackoverflow.com/questions/7339143/why-no-many-to-many-relationships>. 
 * The types of relationships that exist in a database matter less to analysts, but you do need to understand why you would perform different types of JOINs, and what data you are pulling from the database
