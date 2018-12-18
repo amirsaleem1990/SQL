@@ -1,4 +1,4 @@
-# login
+#  login
 mysql -u <username> -p <password>
 
 # show existing databases
